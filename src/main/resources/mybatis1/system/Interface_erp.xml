@@ -1,0 +1,344 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Interface_erp">
+	
+	<!--表名 -->
+	<sql id="tableName">
+		SYS_USERPHOTO
+	</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		USERNAME,	
+		PHOTO0,	
+		PHOTO1,	
+		PHOTO2,	
+		PHOTO3,	
+		USERPHOTO_ID
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{USERNAME},	
+		#{PHOTO0},	
+		#{PHOTO1},	
+		#{PHOTO2},	
+		#{PHOTO3},	
+		#{USERPHOTO_ID}
+	</sql>
+	
+	<!-- 列表(全部) -->
+	<select id="listClient" parameterType="pd" resultType="pd">
+		Select 1 AS 类别,A.FNumber,A.FName AS A_FName,B.FName AS B_FName,A.FItemID,ISNULL(A.FEmployee,0) AS FEmpID,CONVERT(BIGINT, A.FModifyTime) as FModifyTime
+		From t_Organization A
+		Left  Join t_Emp B On B.FItemID=A.FEmployee
+		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Order By A.FNumber
+	</select>
+
+	<!-- 删除-->
+	<delete id="delete_Class" parameterType="pd">
+		Delete From TB_DataSynchLog Where FClassID = #{FClassID}
+	</delete>
+
+
+	<!-- 更新一条对于客户的FModifyTime的数据-->
+	<insert id="insertCusMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 1,'客户','T_Organization','',Max(FModifyTime)
+		From t_Organization
+		Where FDeleted=0
+	</insert>
+
+	<!-- 列表(全部) -->
+	<select id="deptlistPage" parameterType="page" resultType="pd">
+		--部门查询脚本
+		Select
+			top 1000000000
+			2 AS 类别,
+			A.FItemID,
+			A.FNumber,
+			A.FName,
+			A.FParentID
+		From
+			T_Department A
+		Where
+			A.FDeleted=0
+		Order By
+			A.FNumber
+	</select>
+
+	<select id="deptTotal" parameterType="pd" resultType="pd">
+		Select
+			count ( 1 ) as 'total'
+		From
+			T_Department A
+		Where
+			A.FDeleted=0
+	</select>
+
+	<!-- 更新一条对于客户的FModifyTime的数据-->
+	<insert id="insertDeptMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 2,'部门','T_Department','',Max(FModifyTime)
+		From T_Emp
+		Where FDeleted=0
+	</insert>
+
+	<!-- 列表(全部) -->
+	<select id="listEmpl" parameterType="pd" resultType="pd">
+		--职员查询脚本
+		Select 3 AS 类别,A.FNumber AS f_number,A.FName AS f_name,B.FName AS f_deptname,A.FItemID as id,
+		IsNull(A.FDepartmentID,0) as f_deptid,CONVERT(BIGINT, A.FModifyTime) as f_modifytime
+		From T_Emp A
+		Left  Join t_Department B On B.FItemID=A.FDepartmentID
+		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Order By A.FNumber
+	</select>
+
+	<!-- 更新一条对于职员的FModifyTime的数据-->
+	<insert id="insertEmplMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 3,'职员','T_Emp','',Max(FModifyTime)
+		From T_Emp
+		Where FDeleted=0
+	</insert>
+
+	<!-- 列表(全部) -->
+	<select id="listICItem" parameterType="pd" resultType="pd">
+		--物料查询脚本
+		Select 4 AS 类别,A.FNumber AS f_number,A.FName AS f_name,A.FModel AS f_model,B.FName AS f_unitname,C.FName AS f_cname,
+		A.FItemID as id,CONVERT(BIGINT, A.FModifyTime) as f_modifytime,A.FParentId as f_classid
+		From T_ICItem A
+		Inner Join t_MeasureUnit B On B.FMeasureUnitID=A.FUnitID
+		Inner Join t_SubMessage C On C.FInterID=A.FErpClsID
+		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Order By A.FNumber
+	</select>
+
+	<!-- 更新一条对于产品的FModifyTime的数据-->
+	<insert id="insertICItemMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 4,'产品','T_ICItem','',Max(FModifyTime)
+		From T_ICItem
+		Where FDeleted=0
+	</insert>
+
+	<!-- 列表(全部) -->
+	<select id="listStock" parameterType="pd" resultType="pd">
+		--仓库查询脚本
+		Select 5 AS 类别,A.FItemID,A.FName,A.FNumber,A.FParentID,A.FMRPAvail,CONVERT(BIGINT, A.FModifyTime) AS FModifyTime
+		From T_Stock A
+		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Order By A.FModifyTime DESC
+	</select>
+
+	<!-- 更新一条对于职员的FModifyTime的数据-->
+	<insert id="insertStockMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 5,'仓库','T_Stock','',Max(FModifyTime)
+		From T_Stock
+		Where FDeleted=0
+	</insert>
+
+	<!-- 列表(全部) -->
+	<select id="listSupplier" parameterType="pd" resultType="pd">
+		--供应商查询脚本
+		Select 8 AS 类别,A.FNumber AS 供应商代码,A.FName AS 供应商名称,A.FItemID,CONVERT(BIGINT, A.FModifyTime) AS FModifyTime
+		From t_Supplier A
+		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Order By A.FNumber
+	</select>
+
+	<!-- 更新一条对于职员的FModifyTime的数据-->
+	<insert id="insertSupplierMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 8,'供应商','t_Supplier','',Max(FModifyTime)
+		From t_Supplier
+		Where FDeleted=0
+	</insert>
+
+
+	<!-- 列表(全部) -->
+	<select id="listCur" parameterType="pd" resultType="pd">
+		Declare @ClassID Int
+		Declare @ModifyTime binary(8)
+		Select @ModifyTime=IsNUll(FModifyTime,0x0000000) From TB_DataSynchLog Where FClassID=4000001
+		Set @ModifyTime=IsNUll(@ModifyTime,0x0000000)
+		--供应商查询脚本
+		Select 4000001 AS 类别,A.FNumber AS 供应商代码,A.FName AS 供应商名称,A.FCurrencyID,A.FModifyTime
+		From t_Currency A
+		Where A.FCurrencyID <![CDATA[ <> ]]> 0 And A.FModifyTime>@ModifyTime
+		Order By A.FNumber
+	</select>
+
+	<!-- 更新一条对于币别的FModifyTime的数据-->
+	<insert id="insertCurMaxMDF" parameterType="pd">
+		Insert Into TB_DataSynchLog
+		(FClassID,FDataType,FTableName,FDescription,FModifyTime)
+		Select 4000001,'币别','t_Currency','',Max(FModifyTime)
+		From t_Supplier
+		Where FCurrencyID <![CDATA[ <> ]]> 0
+	</insert>
+
+	<select id="listIcItemClass" parameterType="pd" resultType="pd">
+		Select  DATEADD(S,CONVERT(bigint, FModifyTime, 999999999),'1970-01-01 08:00:00') as f_date_modifytime, FItemID as f_itemid,
+		FNumber as f_number,FName as f_name,
+		FParentID as f_parentid,CONVERT(BIGINT, FModifyTime) as f_modifytime
+		From t_Item
+		Where FItemClassID=4 And FDetail=0 And FDeleted=0 And CONVERT(BIGINT, FModifyTime)>#{modifyTime}
+		ORDER BY f_modifytime DESC
+	</select>
+
+	<select id="wareHouseStocklistPage" parameterType="page" resultType="pd">
+		SELECT
+			top 1000000000
+			B.FNumber AS commodityNumber,
+			B.FName AS commodityName,
+			B.FModel AS specification,
+			C.FName AS unit,
+			D.FName AS warehouse,
+			ISNULL( E.FName, '' ) AS warehousePosition,
+			A.FBatchNo AS batchNumber,
+			A.FGrade AS level,
+			A.FColorNum AS colorNumber,
+			A.FPosition AS direction,
+			SUM ( 1 ) AS total
+		FROM
+			ICInventory_Barcode A
+			INNER JOIN t_ICItem B ON B.FItemID= A.FItemID
+			INNER JOIN t_MeasureUnit C ON C.FMeasureUnitID= B.FUnitID
+			INNER JOIN t_Stock D ON D.FItemID= A.FStockID
+			LEFT JOIN t_StockPlace E ON E.FSPID= A.FSPID
+		WHERE
+			1 = 1
+			<if test="pd.itemClassNumber != null and pd.itemClassNumber != 'null' and pd.itemClassNumber != ''">
+				AND B.FNumber LIKE #{pd.itemClassNumber} + '%'
+			</if>
+			<if test="pd.item != null and pd.item != 'null' and pd.item != ''">
+				AND B.FName+ B.FNumber+ IsNull( B.FModel, '' ) LIKE '%' + #{pd.item} + '%'
+			</if>
+			<if test="pd.batchNum != null and pd.batchNum != 'null' and pd.batchNum != ''">
+				AND A.FBatchNo LIKE '%' + #{pd.batchNum} + '%'
+			</if>
+			<if test="pd.level != null and pd.level != 'null' and pd.level != ''">
+				AND A.FGrade LIKE '%' + #{pd.level} + '%'
+			</if>
+			<if test="pd.colorNum != null and pd.colorNum != 'null' and pd.colorNum != ''">
+				AND A.FColorNum LIKE '%' + #{pd.colorNum} + '%'
+			</if>
+			<if test="pd.warehouse != null and pd.warehouse != 'null' and pd.warehouse != ''">
+				AND D.FName LIKE '%' + #{pd.warehouse} + '%'
+			</if>
+		GROUP BY
+			B.FNumber,
+			B.FName,
+			B.FModel,
+			C.FName,
+			A.FBatchNo,
+			D.FName,
+			ISNULL( E.FName, '' ),
+			A.FGrade,
+			A.FColorNum,
+			A.FPosition
+		ORDER BY
+			B.FNumber,
+			A.FBatchNo,
+			D.FName,
+			A.FGrade
+	</select>
+
+	<select id="findWareHouseStockByNum" parameterType="pd" resultType="pd">
+		SELECT
+		top 1000000000
+		D.FNumber AS commodityNumber,
+		D.FName AS commodityName,
+		D.FModel AS specification,
+		B.FName AS warehouse,
+		IsNull( C.FName, '' ) AS warehousePosition,
+		A.FBatchNo AS batchNumber,
+		A.FGrade AS level,
+		A.FColorNum AS colorNumber,
+		SUM ( A.FQty ) AS total
+		FROM
+		ICInventory_Barcode A
+		INNER JOIN t_Stock B ON B.FItemID= A.FStockID
+		LEFT JOIN t_StockPlace C ON C.FSPID= A.FSPID
+		INNER JOIN t_ICItem D ON D.FItemID= A.FItemID
+		<if test="commodityNumber != null and commodityNumber != ''">
+			Where D.FNumber = #{commodityNumber}
+		</if>
+		GROUP BY
+		D.FNumber,
+		D.FName,
+		D.FModel,
+		B.FName,
+		IsNull( C.FName, '' ),
+		A.FBatchNo,
+		A.FGrade,
+		A.FColorNum
+	</select>
+
+	<select id="wareHouseStockTotal" parameterType="pd" resultType="pd">
+		SELECT
+			count ( 1 )
+		FROM
+			ICInventory_Barcode A
+			INNER JOIN t_ICItem B ON B.FItemID= A.FItemID
+			INNER JOIN t_MeasureUnit C ON C.FMeasureUnitID= B.FUnitID
+			INNER JOIN t_Stock D ON D.FItemID= A.FStockID
+			LEFT JOIN t_StockPlace E ON E.FSPID= A.FSPID
+		WHERE
+			1 = 1
+			<if test="itemClassNumber != null and itemClassNumber != 'null' and itemClassNumber != ''">
+				AND B.FNumber LIKE #{itemClassNumber} + '%'
+			</if>
+			<if test="item != null and item != 'null' and item != ''">
+				AND B.FName+ B.FNumber+ IsNull( B.FModel, '' ) LIKE '%' + #{item} + '%'
+			</if>
+			<if test="batchNum != null and batchNum != 'null' and batchNum != ''">
+				AND A.FBatchNo LIKE '%' + #{batchNum} + '%'
+			</if>
+			<if test="level != null and level != 'null' and level != ''">
+				AND A.FGrade LIKE '%' + #{level} + '%'
+			</if>
+			<if test="colorNum != null and colorNum != 'null' and colorNum != ''">
+				AND A.FColorNum LIKE '%' + #{colorNum} + '%'
+			</if>
+			<if test="warehouse != null and warehouse != 'null' and warehouse != ''">
+				AND D.FName LIKE '%' + #{warehouse} + '%'
+			</if>
+		GROUP BY
+			B.FNumber,
+			B.FName,
+			B.FModel,
+			C.FName,
+			A.FBatchNo,
+			D.FName,
+			ISNULL( E.FName, '' ),
+			A.FGrade,
+			A.FColorNum,
+			A.FPosition
+		ORDER BY
+			B.FNumber,
+			A.FBatchNo,
+			D.FName,
+			A.FGrade
+	</select>
+
+	<select id="getLevel" parameterType="page" resultType="pd">
+		SELECT
+			DISTINCT FGrade
+		FROM
+			ICInventory_Barcode
+		ORDER BY
+			FGrade
+	</select>
+
+</mapper>

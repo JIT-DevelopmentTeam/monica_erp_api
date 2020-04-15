@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tokens>
+    <token id="123" name="icitem_class1">
+        <time>
+            2019-05-31
+        </time>
+        <value>
+            123456789
+        </value>
+    </token>
+</tokens>
