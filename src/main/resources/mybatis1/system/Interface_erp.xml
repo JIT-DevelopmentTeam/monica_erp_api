@@ -71,7 +71,7 @@
 
 	<select id="deptTotal" parameterType="pd" resultType="pd">
 		Select
-			count ( 1 ) as 'total'
+			count ( 1 )
 		From
 			T_Department A
 		Where

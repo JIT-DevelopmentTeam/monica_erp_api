@@ -111,9 +111,7 @@ public class ErpGetController extends BaseController{
 		String token_value = pd.getString("token_value");
 		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		//需要填写token值认证
-		PageData	varList = itemService.deptTotal(pd);
-		ArrayList arrayList = new ArrayList();
-		arrayList.add(varList);
+		List<PageData>	varList = itemService.deptTotal(pd);
 		int result = readTokenXml("dept_total",token_value,time_value);
 		if (result == 1){
 			json.put("Data", varList);

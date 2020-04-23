@@ -30,7 +30,7 @@ public interface ItemManager {
 	 * @return
 	 * @throws Exception
 	 */
-	public PageData deptTotal(PageData pd)throws Exception;
+	public List<PageData> deptTotal(PageData pd)throws Exception;
 
 	/**更新一条对于部门的FModifyTime的数据
 	 * @param pd

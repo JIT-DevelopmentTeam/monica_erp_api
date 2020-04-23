@@ -44,8 +44,8 @@ public class ItemService implements ItemManager {
 	}
 
 	@Override
-	public PageData deptTotal(PageData pd) throws Exception {
-		return (PageData) dao.findForObject("Interface_erp.deptTotal", pd);
+	public List<PageData> deptTotal(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("Interface_erp.deptTotal", pd);
 	}
 
 	/**更新一条对于部门的FModifyTime的数据
