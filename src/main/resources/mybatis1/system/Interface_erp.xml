@@ -58,8 +58,8 @@
 			top 1000000000
 			2 AS 类别,
 			A.FItemID,
-			A.FNumber,
-			A.FName,
+			A.FNumber as "erpNumber",
+			A.FName as "erpName",
 			A.FParentID
 		From
 			T_Department A
