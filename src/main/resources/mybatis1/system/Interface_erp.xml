@@ -71,7 +71,7 @@
 
 	<select id="deptTotal" parameterType="pd" resultType="pd">
 		Select
-			count ( 1 )
+			cast( count ( 1 ) as varchar ) as 'total'
 		From
 			T_Department A
 		Where

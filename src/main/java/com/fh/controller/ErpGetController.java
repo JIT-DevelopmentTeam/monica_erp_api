@@ -114,7 +114,7 @@ public class ErpGetController extends BaseController{
 		List<PageData>	varList = itemService.deptTotal(pd);
 		int result = readTokenXml("dept_total",token_value,time_value);
 		if (result == 1){
-			json.put("Data", varList);
+			json.put("Data", varList.get(0).getString("total"));
 		}else {
 			json.put("Data", "");
 		}
