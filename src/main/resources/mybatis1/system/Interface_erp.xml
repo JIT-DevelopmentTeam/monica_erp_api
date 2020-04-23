@@ -94,7 +94,7 @@
 		IsNull(A.FDepartmentID,0) as f_deptid,CONVERT(BIGINT, A.FModifyTime) as f_modifytime
 		From T_Emp A
 		Left  Join t_Department B On B.FItemID=A.FDepartmentID
-		Where A.FDeleted=0 And CONVERT(BIGINT, A.FModifyTime)>#{modifyTime}
+		Where A.FDeleted=0
 		Order By A.FNumber
 	</select>
 
