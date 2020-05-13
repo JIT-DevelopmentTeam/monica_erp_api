@@ -271,8 +271,12 @@
 		INNER JOIN t_Stock B ON B.FItemID= A.FStockID
 		LEFT JOIN t_StockPlace C ON C.FSPID= A.FSPID
 		INNER JOIN t_ICItem D ON D.FItemID= A.FItemID
+		Where 1 = 1
 		<if test="commodityNumber != null and commodityNumber != ''">
-			Where D.FNumber = #{commodityNumber}
+			AND D.FNumber = #{commodityNumber}
+		</if>
+		<if test="batchNum != null and batchNum != ''">
+			AND A.FBatchNo = #{batchNum}
 		</if>
 		GROUP BY
 		D.FNumber,
