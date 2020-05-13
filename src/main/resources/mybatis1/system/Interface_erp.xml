@@ -278,6 +278,9 @@
 		<if test="batchNum != null and batchNum != ''">
 			AND A.FBatchNo = #{batchNum}
 		</if>
+		<if test="warehouse != null and warehouse != ''">
+			AND B.FName = #{warehouse}
+		</if>
 		GROUP BY
 		D.FNumber,
 		D.FName,

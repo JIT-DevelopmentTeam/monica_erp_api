@@ -275,6 +275,8 @@ public class ErpGetController extends BaseController{
 		pd.put("commodityNumber", commodityNumber);
 		String batchNum = pd.getString("batchNum");
 		pd.put("batchNum", batchNum);
+		String warehouse = pd.getString("warehouse");
+		pd.put("warehouse", warehouse);
 		String token_value = pd.getString("token_value");
 		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		//需要填写token值认证
