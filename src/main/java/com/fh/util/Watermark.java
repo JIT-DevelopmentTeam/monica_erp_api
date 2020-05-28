@@ -1,19 +1,6 @@
 package com.fh.util;
 
-import java.awt.Color;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Image;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileOutputStream;
-
-import javax.imageio.ImageIO;
-
-import com.sun.image.codec.jpeg.JPEGCodec;
-import com.sun.image.codec.jpeg.JPEGImageEncoder;
-
-/** 
+/**
  * 说明：图片水印处理类 （报错注意：用安装版的jdk，不要用开发工具自带的jdk）
  * 创建人：FH Q313596790
  * 修改时间：2013年12月1日
@@ -21,24 +8,24 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  */
 public class Watermark {
 	
-		private	static String strFWATERM,strIWATERM;
+		/*private	static String strFWATERM,strIWATERM;
 		
 		static{
 			strFWATERM = Tools.readTxtFile(Const.FWATERM);	//读取文字水印配置
 			strIWATERM = Tools.readTxtFile(Const.IWATERM);	//读取图片水印配置
 		}
 		
-		/**
+		*//**
 		 * 刷新
-		*/
+		*//*
 		public static void fushValue(){
 			strFWATERM = Tools.readTxtFile(Const.FWATERM);	//读取文字水印配置
 			strIWATERM = Tools.readTxtFile(Const.IWATERM);	//读取图片水印配置
 		}
 			
-		/**
+		*//**
 		 * @param imagePath 图片全路径
-		*/
+		*//*
 	  	public static void setWatemark(String imagePath){ 
 	  		//文字水印
 	  		if(null != strFWATERM && !"".equals(strFWATERM)){
@@ -60,7 +47,7 @@ public class Watermark {
 			}
 		  } 
 	  
-	    /**
+	    *//**
 	     * 把图片印刷到图片上
 	     * 
 	     * @param pressImg --
@@ -71,7 +58,7 @@ public class Watermark {
 	     *            --x坐标
 	     * @param y
 	     *            --y坐标
-	     */
+	     *//*
 	    public final static void pressImage(String pressImg, String targetImg,
 	            int x, int y) {
 	        try {
@@ -103,7 +90,7 @@ public class Watermark {
 	        }
 	    }
 
-	    /**
+	    *//**
 	     * 打印文字水印图片
 	     * 
 	     * @param pressText
@@ -121,7 +108,7 @@ public class Watermark {
 	     * @param x --
 	     *            偏移量
 	     * @param y
-	     */
+	     *//*
 
 	    public static void pressText(String pressText, String targetImg,
 	    		String fontName, int fontStyle, Color color, int fontSize, int x,int y) {
@@ -145,7 +132,7 @@ public class Watermark {
 	        } catch (Exception e) {
 	            System.out.println(e);
 	        }
-	    }  
+	    }  */
 	  
 	
 	
