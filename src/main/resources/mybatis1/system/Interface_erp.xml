@@ -294,7 +294,7 @@
 
 	<select id="wareHouseStockTotal" parameterType="pd" resultType="pd">
 		SELECT
-			count ( 1 )
+			count ( 1 ) as "total"
 		FROM
 			ICInventory_Barcode A
 			INNER JOIN t_ICItem B ON B.FItemID= A.FItemID
@@ -346,6 +346,244 @@
 			ICInventory_Barcode
 		ORDER BY
 			FGrade
+	</select>
+
+	<select id="qrCodelistPage" parameterType="page" resultType="pd">
+		SELECT
+			top 1000000000
+			A.FIDCode,
+			A.FBarcode,
+			A.FBatchNo,
+			A.FColorNum,
+			A.FGrade,
+			CONVERT( varchar(100), A.FBillDate, 20 ) AS FBillDate,
+			A.FBiller,
+			A.FChecker,
+			A.FStockStatus,
+			A.FNote,
+			A.FDevice,
+			B.FName,
+			B.FModel,
+			B.FNumber
+		FROM
+			IDCodeTrace A
+			JOIN t_ICItem B ON ( A.FItemID = B.FItemID )
+		WHERE
+			1 = 1
+			<if test="pd.number != null and pd.number != ''">
+				AND B.FNumber Like '%' + #{pd.number} + '%'
+			</if>
+			<if test="pd.batchNo != null and pd.batchNo != ''">
+				AND A.FBatchNo Like '%' + #{pd.batchNo} + '%'
+			</if>
+			<if test="pd.idCode != null and pd.idCode != ''">
+				AND A.FIDCode Like '%' + #{pd.idCode} + '%'
+			</if>
+			<if test="pd.name != null and pd.name != ''">
+				AND B.FName = #{pd.name}
+			</if>
+			<if test="pd.model != null and pd.model != ''">
+				AND B.FModel = #{pd.model}
+			</if>
+		ORDER BY A.FIDCode
+	</select>
+
+	<select id="qrCodeTotal" parameterType="pd" resultType="pd">
+		SELECT
+			count ( 1 ) AS "total"
+		FROM
+			IDCodeTrace A
+			JOIN t_ICItem B ON ( A.FItemID = B.FItemID )
+		WHERE
+			1 = 1
+			<if test="number != null and number != ''">
+				AND B.FNumber Like '%' + #{number} + '%'
+			</if>
+			<if test="batchNo != null and batchNo != ''">
+				AND A.FBatchNo Like '%' + #{batchNo} + '%'
+			</if>
+			<if test="idCode != null and idCode != ''">
+				AND A.FIDCode Like '%' + #{idCode} + '%'
+			</if>
+			<if test="name != null and name != ''">
+				AND B.FName = #{name}
+			</if>
+			<if test="model != null and model != ''">
+				AND B.FModel = #{model}
+			</if>
+	</select>
+
+
+	<!-- ============================ 微信服务号 ============================ -->
+	<select id="orderlistPage" parameterType="page" resultType="pd">
+		SELECT
+		A.FInterID,
+		A.FBillNo,
+		CONVERT( varchar(100), A.FDate, 20 ) as FDate,
+		B.FName,
+		CONVERT( varchar(100), A.FFetchDate, 20 ) as FFetchDate
+		FROM
+		SEOrder A
+		LEFT JOIN t_Organization B ON A.FCustID = B.FItemID
+		where
+		1=1
+		<if test="pd.billNo != null and pd.billNo != ''">
+			and A.FBillNo like '%' + #{pd.billNo} + '%'
+		</if>
+		<if test="pd.startDate != null and pd.startDate != '' and pd.endDate != null and pd.endDate != ''">
+			and A.FDate between #{pd.startDate} and #{pd.endDate}
+		</if>
+		<if test="pd.custName != null and pd.custName != ''">
+			and B.FName like '%' + #{pd.custName} + '%'
+		</if>
+		<if test="pd.startFetchDate != null and pd.startFetchDate != '' and pd.endFetchDate != null and pd.endFetchDate != ''">
+			and A.FFetchDate between #{pd.startFetchDate} and #{pd.endFetchDate}
+		</if>
+	</select>
+
+	<select id="orderlistTotal" parameterType="pd" resultType="pd">
+		SELECT
+			count(1) as "total"
+		FROM
+			SEOrder A
+			LEFT JOIN t_Organization B ON A.FCustID = B.FItemID
+		where
+		1=1
+		<if test="billNo != null and billNo != ''">
+			and A.FBillNo like '%' + #{billNo} + '%'
+		</if>
+		<if test="startDate != null and startDate != '' and endDate != null and endDate != ''">
+			and A.FDate between #{startDate} and #{endDate}
+		</if>
+		<if test="custName != null and custName != ''">
+			and B.FName like '%' + #{custName} + '%'
+		</if>
+		<if test="startFetchDate != null and startFetchDate != '' and endFetchDate != null and endFetchDate != ''">
+			and A.FFetchDate between #{startFetchDate} and #{endFetchDate}
+		</if>
+	</select>
+
+	<select id="orderDetail" parameterType="pd" resultType="pd">
+		SELECT
+			A.FInterID,
+			A.FItemID,
+			B.FName,
+			B.FModel,
+			A.FAuxQty,
+			A.FStockQty
+		FROM
+			SEOrderEntry A
+			LEFT JOIN t_ICItem B ON A.FItemID = B.FItemID
+		WHERE
+		1 = 1
+		<if test="interId != null and interId != ''">
+			AND A.FInterID = #{interId}
+		</if>
+	</select>
+
+	<select id="stocklistPage" parameterType="page" resultType="pd">
+		SELECT
+			B.FNumber,
+			B.FName,
+			B.FModel,
+			C.FName AS Unit,
+			A.FGrade AS FGrade,
+			A.FColorNum,
+			A.FPosition,
+			SUM ( 1 ) AS Quantity,
+			D.FItemID,
+			B.FNumber+','+B.FName+','+B.FModel+','+convert(varchar(20),D.FItemID) as 'info'
+		FROM
+			ICInventory_Barcode A
+			INNER JOIN t_ICItem B ON B.FItemID= A.FItemID
+			INNER JOIN t_MeasureUnit C ON C.FMeasureUnitID= B.FUnitID
+			INNER JOIN t_Stock D ON D.FItemID= A.FStockID
+		WHERE
+		1 = 1
+		<if test="pd.number != null and pd.number != ''">
+			AND B.FNumber LIKE '%' + #{pd.number} + '%'
+		</if>
+		<if test="pd.name != null and pd.name != ''">
+			AND B.FName LIKE '%' + #{pd.name} + '%'
+		</if>
+		<if test="pd.model != null and pd.model != ''">
+			AND B.FModel LIKE '%' + #{pd.model} + '%'
+		</if>
+		<if test="pd.stockId != null and pd.stockId != ''">
+			AND D.FItemID = #{pd.stockId}
+		</if>
+		GROUP BY
+			B.FName,
+			B.FNumber,
+			B.FModel,
+			C.FName,
+			A.FGrade,
+			A.FColorNum,
+			A.FPosition,
+			D.FItemID
+	</select>
+
+	<select id="stocklistTotal" parameterType="pd" resultType="pd">
+		SELECT
+			count (1) as "total"
+		FROM
+			ICInventory_Barcode A
+			INNER JOIN t_ICItem B ON B.FItemID= A.FItemID
+			INNER JOIN t_MeasureUnit C ON C.FMeasureUnitID= B.FUnitID
+			INNER JOIN t_Stock D ON D.FItemID= A.FStockID
+		WHERE
+		1 = 1
+		<if test="number != null and number != ''">
+			AND B.FNumber LIKE '%' + #{number} + '%'
+		</if>
+		<if test="name != null and name != ''">
+			AND B.FName LIKE '%' + #{name} + '%'
+		</if>
+		<if test="model != null and model != ''">
+			AND B.FModel LIKE '%' + #{model} + '%'
+		</if>
+		<if test="stockId != null and stockId != ''">
+			AND D.FItemID = #{stockId}
+		</if>
+		GROUP BY
+			B.FName,
+			B.FNumber,
+			B.FModel,
+			C.FName,
+			A.FGrade,
+			A.FColorNum,
+			A.FPosition
+	</select>
+
+	<select id="stockDetail" parameterType="pd" resultType="pd">
+		SELECT
+			D.FNumber,
+			D.FName,
+			D.FModel,
+			A.FBatchNo,
+			A.FGrade,
+			A.FColorNum,
+			SUM ( A.FQty ) AS total
+		FROM
+			ICInventory_Barcode A
+			INNER JOIN t_Stock B ON B.FItemID= A.FStockID
+			LEFT JOIN t_StockPlace C ON C.FSPID= A.FSPID
+			INNER JOIN t_ICItem D ON D.FItemID= A.FItemID
+		WHERE
+		1=1
+		<if test="info != null and info != ''">
+			AND D.FNumber+','+D.FName+','+D.FModel+','+convert(varchar(20),B.FItemID) = #{info}
+		</if>
+		GROUP BY
+			D.FNumber,
+			D.FName,
+			D.FModel,
+			B.FName,
+			IsNull( C.FName, '' ),
+			A.FBatchNo,
+			A.FGrade,
+			A.FColorNum,
+			A.FSPID
 	</select>
 
 </mapper>

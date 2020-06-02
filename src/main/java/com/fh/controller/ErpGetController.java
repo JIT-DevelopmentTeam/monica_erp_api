@@ -13,6 +13,7 @@ import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.Resource;
@@ -312,9 +313,13 @@ public class ErpGetController extends BaseController{
 		String token_value = pd.getString("token_value");
 		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		//需要填写token值认证
-		List<PageData>	total = itemService.wareHouseStockTotal(pd);
+		List<PageData>	totals = itemService.wareHouseStockTotal(pd);
+		int sum = 0;
+		for (PageData total : totals) {
+			sum += Integer.parseInt(total.get("total").toString());
+		}
 		ArrayList arrayList = new ArrayList();
-		arrayList.add(total.size());
+		arrayList.add(sum);
 		int result = readTokenXml("warehouse_stock_total",token_value,time_value);
 		if (result == 1){
 			json.put("Data", arrayList);
@@ -344,6 +349,140 @@ public class ErpGetController extends BaseController{
 		}
 		return json;
 	}
+
+	@ResponseBody
+	@RequestMapping(value = "/qrCode", method = RequestMethod.GET)
+	public Map<String, Object> qrCode(Page page) throws Exception {
+		Map<String, Object> json = new HashMap<String, Object>();
+		PageData pd = this.getPageData();
+		String currentPage = pd.getString("currentPage");
+		String showCount = pd.getString("showCount");
+		page.setPd(pd);
+		if (currentPage != null && currentPage != "null" && currentPage != "") {
+			page.setCurrentPage(Integer.parseInt(currentPage));
+		}
+		if (showCount != null && showCount != "null" && showCount != "") {
+			page.setShowCount(Integer.parseInt(showCount));
+		}
+		String token_value = pd.getString("token_value");
+		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		List<PageData>	varList = itemService.qrCodelistPage(page);
+		PageData	total = itemService.qrCodeTotal(pd);
+		int result = readTokenXml("qrCode",token_value,time_value);
+		if (result == 1){
+			json.put("Data", varList);
+			json.put("total", total.get("total"));
+		}else {
+			json.put("Data", "");
+			json.put("total", "");
+		}
+		return json;
+	}
+
+	/* =================================== 微信服务号 =================================== */
+	@ResponseBody
+	@RequestMapping(value = "/orderlist", method = RequestMethod.GET)
+	public Map<String, Object> orderlist(Page page) throws Exception {
+		Map<String, Object> json = new HashMap<String, Object>();
+		PageData pd = this.getPageData();
+		String currentPage = pd.getString("currentPage");
+		String showCount = pd.getString("showCount");
+		page.setPd(pd);
+		if (currentPage != null && currentPage != "null" && currentPage != "") {
+			page.setCurrentPage(Integer.parseInt(currentPage));
+		}
+		if (showCount != null && showCount != "null" && showCount != "") {
+			page.setShowCount(Integer.parseInt(showCount));
+		}
+		String token_value = pd.getString("token_value");
+		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		List<PageData>	varList = itemService.orderlistPage(page);
+		PageData	total = itemService.orderlistTotal(pd);
+		int result = readTokenXml("orderlist",token_value,time_value);
+		if (result == 1){
+			json.put("Data", varList);
+			json.put("total", total.get("total"));
+		}else {
+			json.put("Data", "");
+			json.put("total", "");
+		}
+		return json;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/orderDetail", method = RequestMethod.GET)
+	public Map<String, Object> orderDetail(Page page) throws Exception {
+		Map<String, Object> json = new HashMap<>();
+		PageData pd = this.getPageData();
+		String token_value = pd.getString("token_value");
+		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		//需要填写token值认证
+		List<PageData> detail = itemService.orderDetail(pd);
+		int result = readTokenXml("orderDetail",token_value,time_value);
+		if (result == 1){
+			json.put("Data", detail);
+		}else {
+			json.put("Data", "");
+		}
+		return json;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/stockList", method = RequestMethod.GET)
+	public Map<String, Object> stockList(Page page) throws Exception {
+		Map<String, Object> json = new HashMap<>();
+		PageData pd = this.getPageData();
+		String currentPage = pd.getString("currentPage");
+		String showCount = pd.getString("showCount");
+		page.setPd(pd);
+		if (currentPage != null && currentPage != "null" && currentPage != "") {
+			page.setCurrentPage(Integer.parseInt(currentPage));
+		}
+		if (showCount != null && showCount != "null" && showCount != "") {
+			page.setShowCount(Integer.parseInt(showCount));
+		}
+		String token_value = pd.getString("token_value");
+		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		List<PageData>	varList = itemService.stocklistPage(page);
+		List<PageData>	totals = itemService.stocklistTotal(pd);
+		int sum = 0;
+		for (PageData total : totals) {
+			sum += Integer.parseInt(total.get("total").toString());
+		}
+		int result = readTokenXml("stockList",token_value,time_value);
+		if (result == 1){
+			json.put("Data", varList);
+			json.put("total", sum);
+		}else {
+			json.put("Data", "");
+			json.put("total", "");
+		}
+		return json;
+	}
+
+	@ResponseBody
+	@RequestMapping(value = "/stockDetail", method = RequestMethod.GET)
+	public Map<String, Object> stockDetail(Page page) throws Exception {
+		Map<String, Object> json = new HashMap<>();
+		PageData pd = this.getPageData();
+		String token_value = pd.getString("token_value");
+		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+		//需要填写token值认证
+		List<PageData> detail = itemService.stockDetail(pd);
+		int result = readTokenXml("stockDetail",token_value,time_value);
+		if (result == 1){
+			json.put("Data", detail);
+		}else {
+			json.put("Data", "");
+		}
+		return json;
+	}
+
+
+
+
+
+
 
 
 

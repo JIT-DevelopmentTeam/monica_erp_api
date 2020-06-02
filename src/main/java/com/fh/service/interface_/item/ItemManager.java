@@ -137,4 +137,70 @@ public interface ItemManager {
 	 * @throws Exception
 	 */
 	public List<PageData> getLevel(Page page) throws Exception;
+
+	/**
+	 * 二维码追溯
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> qrCodelistPage(Page page) throws Exception;
+
+	/**
+	 * 二维码追溯总数
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	PageData qrCodeTotal(PageData pd)throws Exception;
+
+	/* =================================== 微信服务号 =================================== */
+
+	/**
+	 * 销售订单查询
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> orderlistPage(Page page) throws Exception;
+
+	/**
+	 * 销售订单总数
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	PageData orderlistTotal(PageData pd)throws Exception;
+
+	/**
+	 * 销售订单详情
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> orderDetail(PageData pd) throws Exception;
+
+	/**
+	 * 库存列表-服务号
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> stocklistPage(Page page) throws Exception;
+
+	/**
+	 * 库存列表总数-服务号
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> stocklistTotal(PageData pd) throws Exception;
+
+	/**
+	 * 库存详情-服务号
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> stockDetail(PageData pd) throws Exception;
 }
