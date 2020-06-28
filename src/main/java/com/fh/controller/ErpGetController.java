@@ -314,12 +314,8 @@ public class ErpGetController extends BaseController{
 		String time_value = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 		//需要填写token值认证
 		List<PageData>	totals = itemService.wareHouseStockTotal(pd);
-		int sum = 0;
-		for (PageData total : totals) {
-			sum += Integer.parseInt(total.get("total").toString());
-		}
 		ArrayList arrayList = new ArrayList();
-		arrayList.add(sum);
+		arrayList.add(totals.size());
 		int result = readTokenXml("warehouse_stock_total",token_value,time_value);
 		if (result == 1){
 			json.put("Data", arrayList);
